@@ -1,38 +1,30 @@
-# Underwater Photobooth Web App 🐠
+# LumiLens 🎀
 
-An underwater-themed photobooth web application built with vanilla HTML, CSS, and JavaScript. Add cute sea creatures and bubbles to your photos and download them as a photo strip🐡
+A coquette-themed online photobooth designed to create aesthetic and memorable photo strip experiences.
 
-## Features
-- Live camera preview and photo capture
-- Upload custom photos
-- Add + drag and drop stickers 
-- Download your decorated photo strip
-- Fully responsive design
+> 🚧 **Work in Progress**
 
-## Demo
-[http://photobooth.nashallery.com](http://photobooth.nashallery.com)
+> LumiLens is currently under active development. New features, UI improvements, and performance enhancements are continuously being added.
 
-## Getting Started
-**Important:** This app uses your camera. You cannot open the HTML file directly in a browser due to camera permissions. You need to serve it with a local server.
+---
 
-### Requirements
-- Node.js installed (for `npx serve`)
+## ✨ About
 
-### How to run the project locally
-1. Open a terminal in your project folder:
-   ```bash
-   cd path/to/photobooth-github-tutorial
-   npx serve
-2. Open the URL shown in the terminal (usually http://localhost:3000) in a browser.
+LumiLens is a web-based online photobooth that allows users to capture and customize aesthetic photo strips through a soft coquette-inspired interface. The goal is to provide a fun, elegant, and interactive photo booth experience directly in the browser.
 
-3. Allow camera access when prompted.
+---
 
-## License
+## 🌸 Features
 
-This project is licensed for **educational and personal use only**.  
+- 📸 Capture photos from your webcam
+- 🎀 Coquette-inspired pink aesthetic
+- 🖼️ Customizable photo strip layouts
+- ✨ pose ideas to help improve photo quality
+- 💾 Download photo strips
+- 📱 Responsive design
 
-- Users are free to **view, modify, and add to the code** for learning or personal projects. 
-- **Commercial use is strictly prohibited**: you may **not sell, distribute, or use this code** in any commercial product or for-profit purpose.  
-- Any modifications or additions must also comply with this license and cannot be used commercially.  
+> More exciting features are coming soon!
 
-By using this project, you agree to these terms.
+## 🤍 Credits
+
+This project is based on the original work of **Nasha Wanichwecharungruang**. The original project serves as the foundation, while LumiLens is being extensively customized with interface redesigns, additional features, and personal implementations.
