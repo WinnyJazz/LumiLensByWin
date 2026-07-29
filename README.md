@@ -22,4 +22,5 @@ More exciting features are coming soon!
 
 # Credits
 
-This project is based on the original work of **Nasha Wanichwecharungruang**. The original project serves as the foundation, while LumiLens is being extensively customized with interface redesigns, additional features, and personal implementations ⸜(｡˃ ᵕ ˂ )⸝♡
+This project is based on the original work of **Nasha Wanichwecharungruang**. The original project serves as the foundation, while LumiLens is being extensively customized with interface redesigns, additional features, and personal implementations.
+Special thanks to Nasha Wanichwecharungruang⸜(｡˃ ᵕ ˂ )⸝♡
