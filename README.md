@@ -8,15 +8,9 @@ LumiLens is currently under active development. New features, UI improvements, a
 ## Preview
 
 <p align="center">
-  <img src="assets/preview/lumilens1.png" width="350" alt="lumilens preview"/>
-</p>
-
-<p align="center">
-  <img src="assets/preview/lumilens2.png" width="350" alt="lumilens preview"/>
-</p>
-
-<p align="center">
-  <img src="assets/preview/lumilens3.png" width="350" alt="lumilens preview"/>
+  <img src="Assets/preview/lumilens1.png" width="250"/>
+  <img src="Assets/preview/lumilens2.png" width="250"/>
+  <img src="Assets/preview/lumilens3.png" width="250"/>
 </p>
 
 # About
