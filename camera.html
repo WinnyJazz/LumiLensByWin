@@ -4,28 +4,70 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Camera</title>
-
-  <!-- Favicon -->
   <link rel="icon" href="Assets/fish-photobooth/favicon.png" type="image/x-icon" />
   <link rel="stylesheet" href="StyleSheets/camera.css" />
 </head>
 <body>
-  <div class="logo">
-    <img src="Assets/fish-photobooth/logo-new.png" alt="Logo">
-  </div>
-  <div class="photobooth-container" id="booth">
-    <div class="bubble-container"></div>
-    <div class="countdown-timer">3</div>
-    <canvas id="finalCanvas" width="1176" height="1470"></canvas>
-    <video id="liveVideo" autoplay playsinline muted></video>
-    <img class="frame-overlay" src="Assets/fish-photobooth/camerapage/frame.png" alt="frame overlay" />
+  <div class="page-background">
+
+    <!-- live camera screen -->
+    <div class="screen" id="cameraScreen">
+      <div class="photobooth-container" id="booth">
+        <div class="bubble-container"></div>
+        <div class="countdown-timer">3</div>
+
+        <button class="pose-ideas-btn" id="poseIdeasBtn">Pose Ideas</button>
+
+        <canvas id="finalCanvas" width="1176" height="1470"></canvas>
+        <video id="liveVideo" autoplay playsinline muted></video>
+
+
+        <div class="pose-sidebar" id="poseSidebar">
+          <div class="pose-sidebar-header">
+            <button class="pose-back-btn" id="poseBackBtn">&larr;</button>
+            <span class="pose-sidebar-title">Pose Ideas</span>
+          </div>
+          <div class="pose-columns" id="poseColumns"></div>
+          <div class="pose-sidebar-footer">
+            <span class="pose-set-label" id="poseSetLabel"></span>
+            <button class="pose-next-btn" id="poseNextBtn">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="takePhoto">Capture</button>
+        <button id="readyButton" disabled style="display: none;">Ready</button>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 2: PILIH FRAME ===== -->
+    <div class="screen" id="frameScreen" style="display: none;">
+      <div class="frame-preview-container">
+        <canvas id="previewCanvas" width="1176" height="1470"></canvas>
+        <img class="frame-overlay" id="frameOverlay" src="Assets/fish-photobooth/camerapage/frame1.png" alt="frame overlay" />
+      </div>
+
+      <div class="frame-selector" id="frameSelector">
+        <button class="frame-thumb selected" data-frame="Assets/fish-photobooth/camerapage/frame1.png">
+          <img src="Assets/fish-photobooth/camerapage/frame1-thumb.png" alt="Frame 1">
+        </button>
+        <button class="frame-thumb" data-frame="Assets/fish-photobooth/camerapage/frame2.png">
+          <img src="Assets/fish-photobooth/camerapage/frame2-thumb.png" alt="Frame 2">
+        </button>
+        <button class="frame-thumb" data-frame="Assets/fish-photobooth/camerapage/frame3.png">
+          <img src="Assets/fish-photobooth/camerapage/frame3-thumb.png" alt="Frame 3">
+        </button>
+      </div>
+
+      <div class="controls">
+        <button id="confirmFrameBtn">Done</button>
+      </div>
+    </div>
+
   </div>
 
-  <div class="controls">
-    <button id="takePhoto">Capture</button>
-    <button id="readyButton" disabled style="display: none;">Ready</button>
-  </div>
-
+  <script src="Javascripts/frameSelector.js"></script>
   <script src="Javascripts/camera.js"></script>
   <script src="Javascripts/bubbles.js"></script>
 </body>

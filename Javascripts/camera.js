@@ -11,16 +11,16 @@ const elements = {
   countdownEl: document.querySelector('.countdown-timer')
 };
 
-let photoStage = 0; // 0=top,1=bottom,2=done
+let photoStage = 0; // 0=capture pertama, 1=capture kedua, 2=selesai
 
-// move video to half
-const moveVideoToHalf = i => {
+// video selalu full 1 kotak, ga usah digeser2 lagi
+const showFullVideo = () => {
   const { video } = elements;
   video.style.display = 'block';
-  video.style.top = i === 0 ? '0' : '50%';
+  video.style.top = '0';
   video.style.left = '0';
   video.style.width = '100%';
-  video.style.height = '50%';
+  video.style.height = '100%';
 };
 
 // countdown
@@ -40,7 +40,8 @@ const startCountdown = callback => {
   }, 1000);
 };
 
-// capture photo
+// capture photo — tetep nulis ke setengah atas/bawah CANVAS,
+// video di layar tetep full, ga kepengaruh
 const capturePhoto = () => {
   const { video, ctx, takePhotoBtn } = elements;
   const yOffset = photoStage === 0 ? 0 : HALF;
@@ -58,7 +59,7 @@ const capturePhoto = () => {
   ctx.restore();
 
   photoStage++;
-  if (photoStage === 1) { moveVideoToHalf(1); takePhotoBtn.disabled = false; }
+  if (photoStage === 1) { takePhotoBtn.disabled = false; } // capture ke-2 masih boleh
   else if (photoStage === 2) finalizePhotoStrip();
 };
 
@@ -89,7 +90,7 @@ const downloadPhoto = () => {
 // setup camera
 const setupCamera = () => {
   navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 2560 }, height: { ideal: 1440 }, facingMode: 'user' }, audio: false })
-    .then(stream => { elements.video.srcObject = stream; elements.video.play(); moveVideoToHalf(0); })
+    .then(stream => { elements.video.srcObject = stream; elements.video.play(); showFullVideo(); })
     .catch(err => alert('Camera access failed: ' + err));
 };
 
@@ -104,10 +105,7 @@ const setupEventListeners = () => {
   });
 
   downloadBtn.addEventListener('click', downloadPhoto);
-  window.addEventListener('resize', () => {
-    if (photoStage === 0) moveVideoToHalf(0);
-    else if (photoStage === 1) moveVideoToHalf(1);
-  });
+  // resize listener lama dihapus karena video udah ga pernah digeser-geser lagi
 };
 
 // initialize photo booth
