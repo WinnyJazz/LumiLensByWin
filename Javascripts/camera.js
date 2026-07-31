@@ -1,19 +1,49 @@
 // constants
 const WIDTH = 1176, HEIGHT = 1470, HALF = HEIGHT / 2;
 
-// dom elements
-const elements = {
-  video: document.getElementById('liveVideo'),
-  canvas: document.getElementById('finalCanvas'),
-  ctx: document.getElementById('finalCanvas').getContext('2d'),
-  takePhotoBtn: document.getElementById('takePhoto'),
-  downloadBtn: document.getElementById('downloadBtn'),
-  countdownEl: document.querySelector('.countdown-timer')
+const FRAMES = [
+  { name: 'Classic', src: 'Assets/fish-photobooth/camerapage/frame.png' },
+  // tambahin frame lain di sini, contoh:
+  // { name: 'Pink', src: 'Assets/fish-photobooth/camerapage/frame-pink.png' },
+];
+
+const screens = {
+  camera: document.getElementById('cameraScreen'),
+  preview: document.getElementById('previewScreen'),
+  frame: document.getElementById('frameScreen'),
 };
 
-let photoStage = 0; // 0=capture pertama, 1=capture kedua, 2=selesai
+const elements = {
+  video: document.getElementById('liveVideo'),
+  finalCanvas: document.getElementById('finalCanvas'),
+  finalCtx: document.getElementById('finalCanvas').getContext('2d'),
+  previewCanvas: document.getElementById('previewCanvas'),
+  previewCtx: document.getElementById('previewCanvas').getContext('2d'),
+  stripCanvas: document.getElementById('stripPreviewCanvas'),
+  stripCtx: document.getElementById('stripPreviewCanvas').getContext('2d'),
+  frameOverlayImg: document.getElementById('frameOverlayImg'),
+  frameSelectorEl: document.getElementById('frameSelector'),
+  takePhotoBtn: document.getElementById('takePhoto'),
+  retakeBtn: document.getElementById('retakeBtn'),
+  nextBtn: document.getElementById('nextBtn'),
+  doneBtn: document.getElementById('doneBtn'),
+  confirmFrameBtn: document.getElementById('confirmFrameBtn'),
+  countdownEl: document.querySelector('.countdown-timer'),
+  captureStatus: document.getElementById('captureStatus'),
+};
 
-// video selalu full 1 kotak, ga usah digeser2 lagi
+let photoStage = 0; // 0 = capture pertama, 1 = capture kedua
+let selectedFrame = FRAMES[0];
+let tempImageData = null; // hasil capture sementara, sebelum di-confirm ke final canvas
+
+// ============ SCREEN SWITCH ============
+const showScreen = (name) => {
+  Object.entries(screens).forEach(([key, el]) => {
+    el.style.display = key === name ? 'flex' : 'none';
+  });
+};
+
+// ============ CAMERA ============
 const showFullVideo = () => {
   const { video } = elements;
   video.style.display = 'block';
@@ -23,16 +53,30 @@ const showFullVideo = () => {
   video.style.height = '100%';
 };
 
-// countdown
-const startCountdown = callback => {
+const setupCamera = () => {
+  navigator.mediaDevices.getUserMedia({
+    video: { width: { ideal: 2560 }, height: { ideal: 1440 }, facingMode: 'user' },
+    audio: false
+  })
+    .then(stream => {
+      elements.video.srcObject = stream;
+      elements.video.play();
+      showFullVideo();
+    })
+    .catch(err => alert('Camera access failed: ' + err));
+};
+
+// ============ COUNTDOWN ============
+const startCountdown = (callback) => {
   let count = 3;
   const { countdownEl } = elements;
   countdownEl.textContent = count;
   countdownEl.style.display = 'flex';
   const intervalId = setInterval(() => {
     count--;
-    if (count > 0) countdownEl.textContent = count;
-    else {
+    if (count > 0) {
+      countdownEl.textContent = count;
+    } else {
       clearInterval(intervalId);
       countdownEl.style.display = 'none';
       callback();
@@ -40,11 +84,12 @@ const startCountdown = callback => {
   }, 1000);
 };
 
-// capture photo — tetep nulis ke setengah atas/bawah CANVAS,
-// video di layar tetep full, ga kepengaruh
-const capturePhoto = () => {
-  const { video, ctx, takePhotoBtn } = elements;
-  const yOffset = photoStage === 0 ? 0 : HALF;
+// ============ CAPTURE KE CANVAS SEMENTARA (foto utuh, belum ditempel ke strip) ============
+const captureToTemp = () => {
+  const { video, previewCanvas, previewCtx } = elements;
+  previewCanvas.width = WIDTH;
+  previewCanvas.height = HALF;
+
   const vW = video.videoWidth, vH = video.videoHeight;
   const targetAspect = WIDTH / HALF, vAspect = vW / vH;
   let sx, sy, sw, sh;
@@ -52,67 +97,126 @@ const capturePhoto = () => {
   if (vAspect > targetAspect) { sh = vH; sw = vH * targetAspect; sx = (vW - sw) / 2; sy = 0; }
   else { sw = vW; sh = vW / targetAspect; sx = 0; sy = (vH - sh) / 2; }
 
-  ctx.save();
-  ctx.translate(WIDTH, 0);
-  ctx.scale(-1, 1);
-  ctx.drawImage(video, sx, sy, sw, sh, 0, yOffset, WIDTH, HALF);
-  ctx.restore();
+  previewCtx.save();
+  previewCtx.translate(WIDTH, 0);
+  previewCtx.scale(-1, 1);
+  previewCtx.drawImage(video, sx, sy, sw, sh, 0, 0, WIDTH, HALF);
+  previewCtx.restore();
+
+  tempImageData = previewCtx.getImageData(0, 0, WIDTH, HALF);
+};
+
+const handleCaptureDone = () => {
+  captureToTemp();
+  updatePreviewButtons();
+  showScreen('preview');
+};
+
+// ============ PREVIEW ACTIONS ============
+const retakePhoto = () => {
+  tempImageData = null;
+  showScreen('camera');
+};
+
+const confirmPhoto = () => {
+  const { finalCtx } = elements;
+  const yOffset = photoStage === 0 ? 0 : HALF;
+  finalCtx.putImageData(tempImageData, 0, yOffset);
 
   photoStage++;
-  if (photoStage === 1) { takePhotoBtn.disabled = false; } // capture ke-2 masih boleh
-  else if (photoStage === 2) finalizePhotoStrip();
+  tempImageData = null;
+
+  if (photoStage === 1) {
+    updateCaptureStatus();
+    showScreen('camera');
+  } else {
+    finalizePhotoStrip();
+  }
 };
 
-// finalize photo strip
+const updateCaptureStatus = () => {
+  elements.captureStatus.textContent = `Photo ${photoStage + 1} of 2`;
+};
+
+const updatePreviewButtons = () => {
+  const { retakeBtn, nextBtn, doneBtn } = elements;
+  nextBtn.style.display = photoStage === 0 ? 'inline-block' : 'none';
+  doneBtn.style.display = photoStage === 1 ? 'inline-block' : 'none';
+};
+
+// ============ FINALIZE STRIP -> LAYAR PILIH FRAME ============
 const finalizePhotoStrip = () => {
-  const { video, ctx, canvas } = elements;
-  video.style.display = 'none';
+  const { finalCanvas, stripCanvas, stripCtx } = elements;
+  stripCanvas.width = WIDTH;
+  stripCanvas.height = HEIGHT;
+  stripCtx.drawImage(finalCanvas, 0, 0);
+
+  renderFrameSelector();
+  applySelectedFrame();
+  showScreen('frame');
+};
+
+const renderFrameSelector = () => {
+  const { frameSelectorEl } = elements;
+  frameSelectorEl.innerHTML = '';
+  FRAMES.forEach((frame) => {
+    const btn = document.createElement('button');
+    btn.className = 'frame-thumb' + (frame === selectedFrame ? ' selected' : '');
+    btn.innerHTML = `<img src="${frame.src}" alt="${frame.name}">`;
+    btn.addEventListener('click', () => {
+      selectedFrame = frame;
+      [...frameSelectorEl.children].forEach(c => c.classList.remove('selected'));
+      btn.classList.add('selected');
+      applySelectedFrame();
+    });
+    frameSelectorEl.appendChild(btn);
+  });
+};
+
+const applySelectedFrame = () => {
+  elements.frameOverlayImg.src = selectedFrame.src;
+};
+
+// ============ CONFIRM FRAME -> FINAL ============
+const goToFinal = () => {
+  const { finalCanvas, finalCtx } = elements;
   const frame = new Image();
-  frame.src = 'Assets/fish-photobooth/camerapage/frame.png';
+  frame.src = selectedFrame.src;
   frame.onload = () => {
-    ctx.drawImage(frame, 0, 0, WIDTH, HEIGHT);
-    localStorage.setItem('photoStrip', canvas.toDataURL('image/png'));
-    setTimeout(() => window.location.href = 'final.html', 50);
+    finalCtx.drawImage(frame, 0, 0, WIDTH, HEIGHT);
+    localStorage.setItem('photoStrip', finalCanvas.toDataURL('image/png'));
+    window.location.href = 'final.html';
   };
-  frame.complete && frame.onload();
+  if (frame.complete) frame.onload();
 };
 
-// download photo
-const downloadPhoto = () => {
-  elements.canvas.toBlob(blob => {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'photo-strip.png';
-    a.click();
-  }, 'image/png');
-};
-
-// setup camera
-const setupCamera = () => {
-  navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 2560 }, height: { ideal: 1440 }, facingMode: 'user' }, audio: false })
-    .then(stream => { elements.video.srcObject = stream; elements.video.play(); showFullVideo(); })
-    .catch(err => alert('Camera access failed: ' + err));
-};
-
-// setup events
+// ============ EVENTS ============
 const setupEventListeners = () => {
-  const { takePhotoBtn, downloadBtn } = elements;
+  const { takePhotoBtn, retakeBtn, nextBtn, doneBtn, confirmFrameBtn } = elements;
 
   takePhotoBtn.addEventListener('click', () => {
-    if (photoStage > 1) return;
     takePhotoBtn.disabled = true;
-    startCountdown(capturePhoto);
+    startCountdown(() => {
+      handleCaptureDone();
+      takePhotoBtn.disabled = false;
+    });
   });
 
-  downloadBtn.addEventListener('click', downloadPhoto);
-  // resize listener lama dihapus karena video udah ga pernah digeser-geser lagi
+  retakeBtn.addEventListener('click', retakePhoto);
+  nextBtn.addEventListener('click', confirmPhoto);
+  doneBtn.addEventListener('click', confirmPhoto);
+  confirmFrameBtn.addEventListener('click', goToFinal);
 };
 
-// initialize photo booth
-const initPhotoBooth = () => { setupCamera(); setupEventListeners(); };
+// ============ INIT ============
+const initPhotoBooth = () => {
+  updateCaptureStatus();
+  showScreen('camera');
+  setupCamera();
+  setupEventListeners();
+};
 initPhotoBooth();
 
-// logo redirect
 document.addEventListener('DOMContentLoaded', () => {
   const logo = document.querySelector('.logo');
   if (logo) logo.addEventListener('click', () => window.location.href = 'index.html');

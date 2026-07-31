@@ -7,35 +7,56 @@
 
   <!-- Favicon -->
   <link rel="icon" href="Assets/fish-photobooth/favicon.png" type="image/x-icon" />
+
+  <!-- Shared CSS -->
   <link rel="stylesheet" href="StyleSheets/camera.css" />
-  <style>
-    /* hide the actual file input */
-    #uploadPhotoInput {
-      display: none;
-    }
-  </style>
 </head>
+
 <body>
-  <div class="logo">
-    <img src="Assets/fish-photobooth/logo-new.png" alt="Logo">
-  </div>
 
-  <div class="photobooth-container" id="booth">
-    <div class="bubble-container"></div>
-    <canvas id="finalCanvas" width="1176" height="1470"></canvas>
+  <div class="page-background">
 
-    <!-- hidden file input -->
-    <input type="file" id="uploadPhotoInput" accept="image/*" />
+    <!-- Upload Screen -->
+    <div class="screen" id="uploadScreen">
 
-    <img class="frame-overlay" src="Assets/fish-photobooth/camerapage/frame.png" alt="frame overlay" />
-  </div>
+      <div class="photobooth-container" id="booth">
 
-  <div class="controls">
-    <button id="uploadPhoto">Upload Photo</button>
-    <button id="readyButton" disabled style="display:none;">Ready</button>
+        <!-- Bubble Animation -->
+        <div class="bubble-container"></div>
+
+        <!-- Canvas -->
+        <canvas id="finalCanvas" width="1176" height="1470"></canvas>
+
+        <!-- Hidden File Input -->
+        <input
+          type="file"
+          id="uploadPhotoInput"
+          accept="image/*"
+        />
+
+        <!-- Frame Overlay -->
+        <img
+          class="frame-overlay"
+          src="Assets/fish-photobooth/camerapage/frame.png"
+          alt="Frame Overlay"
+        />
+
+      </div>
+
+      <!-- Buttons -->
+      <div class="controls">
+        <button id="uploadPhoto">Upload Photo</button>
+        <button id="readyButton" disabled style="display:none;">
+          Ready
+        </button>
+      </div>
+
+    </div>
+
   </div>
 
   <script src="Javascripts/upload.js"></script>
   <script src="Javascripts/bubbles.js"></script>
+
 </body>
 </html>
