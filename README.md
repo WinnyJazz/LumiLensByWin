@@ -8,29 +8,21 @@ LumiLens is currently under active development. New features, UI improvements, a
 ## Preview
 
 <p align="center">
-  <img src="assets/preview/lumilens1.png" width="350" alt="lumilens preview"/>
-</p>
-
-<p align="center">
-  <img src="assets/preview/lumilens2.png" width="350" alt="lumilens preview"/>
-</p>
-
-<p align="center">
-  <img src="assets/preview/lumilens3.png" width="350" alt="lumilens preview"/>
+  <img src="Assets/preview/lumilens1.png" width="250"/>
+  <img src="Assets/preview/lumilens2.png" width="250"/>
+  <img src="Assets/preview/lumilens3.png" width="250"/>
 </p>
 
 # About
 
 LumiLens is a web-based online photobooth that allows users to capture and customize aesthetic photo strips through a soft coquette-inspired interface. The goal is to provide a fun, elegant, and interactive photo booth experience directly in the browser.
 
-# Features
+# updated Features
 
-- 📸 Capture photos from your webcam
-- 🎀 Coquette-inspired pink aesthetic
+- 🎀 New UI designed by me (Coquette-inspired pink aesthetic)
 - 🖼️ Customizable photo strip layouts
 - ✨ pose ideas to help improve photo quality
 - 💾 Download photo strips
-- 📱 Responsive design
 
 More exciting features are coming soon!
 
