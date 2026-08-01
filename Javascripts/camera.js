@@ -30,6 +30,7 @@ const elements = {
   confirmFrameBtn: document.getElementById('confirmFrameBtn'),
   countdownEl: document.querySelector('.countdown-timer'),
   captureStatus: document.getElementById('captureStatus'),
+  saveBtn: document.getElementById('saveBtn'),
 };
 
 let photoStage = 0; // 0 = capture pertama, 1 = capture kedua
@@ -177,17 +178,55 @@ const applySelectedFrame = () => {
   elements.frameOverlayImg.src = selectedFrame.src;
 };
 
-// ============ CONFIRM FRAME -> FINAL ============
-const goToFinal = () => {
-  const { finalCanvas, finalCtx } = elements;
+// ============ CONFIRM FRAME -> TAMPILKAN HASIL JADI (di halaman yang sama) ============
+const confirmFrame = () => {
+  const { finalCanvas, finalCtx, stripCanvas, stripCtx, frameOverlayImg } = elements;
   const frame = new Image();
   frame.src = selectedFrame.src;
-  frame.onload = () => {
+
+  const doConfirm = () => {
+    // bakar frame ke finalCanvas (buffer) -> ini yang jadi source of truth buat save
     finalCtx.drawImage(frame, 0, 0, WIDTH, HEIGHT);
-    localStorage.setItem('photoStrip', finalCanvas.toDataURL('image/png'));
-    window.location.href = 'final.html';
+
+    // update tampilan biar strip yang keliatan = hasil jadi (foto + frame nyatu)
+    stripCtx.clearRect(0, 0, stripCanvas.width, stripCanvas.height);
+    stripCtx.drawImage(finalCanvas, 0, 0);
+    frameOverlayImg.style.display = 'none'; // frame udah nempel di canvas, overlay img ga perlu lagi
+
+    // sembunyiin pilihan frame & tombol confirm, sisain hasil jadi + save
+    screens.frame.classList.add('frame-screen-confirmed');
   };
-  if (frame.complete) frame.onload();
+
+  if (frame.complete) doConfirm();
+  else frame.onload = doConfirm;
+};
+
+// ============ SAVE PHOTO (Save As) ============
+const savePhoto = async () => {
+  const { finalCanvas } = elements;
+
+  finalCanvas.toBlob(async (blob) => {
+    if (window.showSaveFilePicker) {
+      try {
+        const handle = await window.showSaveFilePicker({
+          suggestedName: 'photo-strip.png',
+          types: [{ description: 'PNG Image', accept: { 'image/png': ['.png'] } }],
+        });
+        const writable = await handle.createWritable();
+        await writable.write(blob);
+        await writable.close();
+      } catch (err) {
+        if (err.name !== 'AbortError') console.error('Save failed:', err);
+      }
+      return;
+    }
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'photo-strip.png';
+    a.click();
+    URL.revokeObjectURL(a.href);
+  }, 'image/png');
 };
 
 // ============ EVENTS ============
@@ -205,7 +244,8 @@ const setupEventListeners = () => {
   retakeBtn.addEventListener('click', retakePhoto);
   nextBtn.addEventListener('click', confirmPhoto);
   doneBtn.addEventListener('click', confirmPhoto);
-  confirmFrameBtn.addEventListener('click', goToFinal);
+  confirmFrameBtn.addEventListener('click', confirmFrame);
+  saveBtn.addEventListener('click', savePhoto);
 };
 
 // ============ INIT ============

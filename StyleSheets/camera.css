@@ -362,3 +362,8 @@ body {
   cursor: not-allowed;
 }
 
+.frame-screen-confirmed .frame-selector,
+.frame-screen-confirmed #confirmFrameBtn {
+  display: none;
+}
+
