@@ -231,7 +231,7 @@ const savePhoto = async () => {
 
 // ============ EVENTS ============
 const setupEventListeners = () => {
-  const { takePhotoBtn, retakeBtn, nextBtn, doneBtn, confirmFrameBtn } = elements;
+  const { takePhotoBtn, retakeBtn, nextBtn, doneBtn, confirmFrameBtn, saveBtn } = elements;
 
   takePhotoBtn.addEventListener('click', () => {
     takePhotoBtn.disabled = true;

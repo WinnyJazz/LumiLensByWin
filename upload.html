@@ -4,59 +4,61 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Upload</title>
-
-  <!-- Favicon -->
   <link rel="icon" href="Assets/fish-photobooth/favicon.png" type="image/x-icon" />
-
-  <!-- Shared CSS -->
   <link rel="stylesheet" href="StyleSheets/camera.css" />
 </head>
-
 <body>
-
   <div class="page-background">
 
-    <!-- Upload Screen -->
+    <!-- ===== SCREEN 1: UPLOAD PICKER ===== -->
     <div class="screen" id="uploadScreen">
-
       <div class="photobooth-container" id="booth">
-
-        <!-- Bubble Animation -->
         <div class="bubble-container"></div>
 
-        <!-- Canvas -->
+        <div class="capture-status" id="uploadStatus">Photo 1 of 2</div>
+
+        <!-- finalCanvas cuma buffer, disembunyiin lewat CSS -->
         <canvas id="finalCanvas" width="1176" height="1470"></canvas>
 
-        <!-- Hidden File Input -->
-        <input
-          type="file"
-          id="uploadPhotoInput"
-          accept="image/*"
-        />
-
-        <!-- Frame Overlay -->
-        <img
-          class="frame-overlay"
-          src="Assets/fish-photobooth/camerapage/frame.png"
-          alt="Frame Overlay"
-        />
-
+        <input type="file" id="uploadPhotoInput" accept="image/*" />
       </div>
 
-      <!-- Buttons -->
       <div class="controls">
         <button id="uploadPhoto">Upload Photo</button>
-        <button id="readyButton" disabled style="display:none;">
-          Ready
-        </button>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 2: PREVIEW FOTO (UTUH) ===== -->
+    <div class="screen" id="previewScreen" style="display:none;">
+      <div class="photobooth-container">
+        <canvas id="previewCanvas"></canvas>
       </div>
 
+      <div class="controls">
+        <button id="retakeBtn">Retake</button>
+        <button id="nextBtn">Next</button>
+        <button id="doneBtn">Done</button>
+      </div>
+    </div>
+
+    <!-- ===== SCREEN 3: PILIH FRAME ===== -->
+    <div class="screen" id="frameScreen" style="display:none;">
+      <div class="frame-preview-container">
+        <canvas id="stripPreviewCanvas"></canvas>
+        <img class="frame-overlay" id="frameOverlayImg" alt="frame preview">
+      </div>
+
+      <div class="frame-selector" id="frameSelector"></div>
+
+      <div class="controls">
+        <button id="saveBtn">Save</button>
+        <button id="confirmFrameBtn">Confirm</button>
+      </div>
     </div>
 
   </div>
 
   <script src="Javascripts/upload.js"></script>
   <script src="Javascripts/bubbles.js"></script>
-
 </body>
 </html>
