@@ -28,9 +28,9 @@ const elements = {
   nextBtn: document.getElementById('nextBtn'),
   doneBtn: document.getElementById('doneBtn'),
   confirmFrameBtn: document.getElementById('confirmFrameBtn'),
+  saveBtn: document.getElementById('saveBtn'),
   countdownEl: document.querySelector('.countdown-timer'),
   captureStatus: document.getElementById('captureStatus'),
-  saveBtn: document.getElementById('saveBtn'),
 };
 
 let photoStage = 0; // 0 = capture pertama, 1 = capture kedua
@@ -191,7 +191,7 @@ const confirmFrame = () => {
     // update tampilan biar strip yang keliatan = hasil jadi (foto + frame nyatu)
     stripCtx.clearRect(0, 0, stripCanvas.width, stripCanvas.height);
     stripCtx.drawImage(finalCanvas, 0, 0);
-    frameOverlayImg.style.display = 'none'; // frame udah nempel di canvas, overlay img ga perlu lagi
+    frameOverlayImg.style.display = 'none';
 
     // sembunyiin pilihan frame & tombol confirm, sisain hasil jadi + save
     screens.frame.classList.add('frame-screen-confirmed');

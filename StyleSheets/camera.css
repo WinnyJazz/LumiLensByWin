@@ -23,6 +23,7 @@ body {
   min-height: 100vh;
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
@@ -70,8 +71,12 @@ body {
   height: 100%;
 }
 
-/* Hanya video & canvas yang perlu crop */
-.photobooth-container video,
+/* Video full cover, biar ga ada space abu-abu */
+.photobooth-container video {
+  object-fit: cover;
+}
+
+/* Canvas tetep contain, biar hasil capture ga ke-crop pas ditampilin */
 .photobooth-container canvas {
   object-fit: contain;
 }
@@ -80,6 +85,16 @@ body {
 .photobooth-container .frame-overlay {
   pointer-events: none;
   z-index: 8;
+}
+
+/* buffer canvas, gak perlu tampil */
+#finalCanvas {
+  display: none;
+}
+
+/* Preview canvas khusus: full cover, biar ga ada gap abu-abu kayak video */
+#previewCanvas {
+  object-fit: cover;
 }
 
 /* Hidden upload input */
@@ -360,6 +375,41 @@ body {
 .controls button:disabled {
   opacity: .5;
   cursor: not-allowed;
+}
+
+/* =========================
+   TOP BAR (Main Menu)
+========================= */
+
+.top-bar {
+  width: 100%;
+  max-width: 900px;
+
+  display: flex;
+  justify-content: flex-start;
+
+  margin-bottom: 14px;
+}
+
+.main-menu-btn {
+  border: none;
+  border-radius: 999px;
+
+  padding: 10px 22px;
+
+  background-color: #fdf6ef;
+
+  color: #e08585;
+  font-family: "Georgia", serif;
+  font-size: 14px;
+  letter-spacing: 1px;
+
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.main-menu-btn:hover {
+  background: #fff;
 }
 
 .frame-screen-confirmed .frame-selector,
