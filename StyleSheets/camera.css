@@ -316,35 +316,33 @@ body {
 
 .frame-selector {
   display: flex;
-  gap: 12px;
-
-  margin-top: 18px;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 20px;
 }
 
 .frame-thumb {
+  border: none;
+  background: transparent;
   padding: 0;
-
-  overflow: hidden;
-
-  border: 3px solid transparent;
-  border-radius: 10px;
-
-  background: none;
   cursor: pointer;
 }
 
 .frame-thumb img {
-  width: 60px;
-  height: 75px;
-
-  display: block;
-  object-fit: cover;
+  width: 80px;
+  border-radius: 12px;
+  transition: transform 0.2s ease;
 }
 
-.frame-thumb.selected {
-  border-color: #f2a9a3;
+.frame-thumb:hover img {
+  transform: scale(1.05);
 }
 
+.frame-thumb.selected img {
+  outline: 3px solid #c8b6a6;
+  outline-offset: 3px;
+}
 /* =========================
    BUTTONS
 ========================= */

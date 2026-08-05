@@ -16,19 +16,47 @@ const canvas = document.getElementById('finalCanvas'),
 // sticker state
 let stickers = [], dragOffset = { x: 0, y: 0 }, selectedSticker = null;
 
+
 // load photo
-const finalImage = new Image(), dataURL = localStorage.getItem('photoStrip');
+const finalImage = new Image();
+const frameImage = new Image();
+
+frameImage.src = "Assets/frames/frame1.png";
+
+const dataURL = localStorage.getItem('photoStrip');
 if (dataURL) {
   finalImage.src = dataURL;
-  finalImage.onload = drawCanvas;
-  localStorage.removeItem('photoStrip');
-} else alert("No photo found!");
+
+  let loaded = 0;
+
+  function checkLoaded() {
+    loaded++;
+    if (loaded === 2) {
+      drawCanvas();
+      localStorage.removeItem("photoStrip");
+    }
+  }
+
+  finalImage.onload = checkLoaded;
+  frameImage.onload = checkLoaded;
+} else {
+  alert("No photo found!");
+}
 
 // draw canvas
 function drawCanvas() {
   ctx.clearRect(0, 0, WIDTH, HEIGHT);
+
+  // Foto
   ctx.drawImage(finalImage, 0, 0, WIDTH, HEIGHT);
-  stickers.forEach(s => ctx.drawImage(s.img, s.x, s.y, s.width, s.height));
+
+  // Sticker
+  stickers.forEach(s =>
+    ctx.drawImage(s.img, s.x, s.y, s.width, s.height)
+  );
+
+  // Frame (paling atas)
+  ctx.drawImage(frameImage, 0, 0, WIDTH, HEIGHT);
 }
 
 // add sticker

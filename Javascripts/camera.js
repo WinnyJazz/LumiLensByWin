@@ -2,9 +2,22 @@
 const WIDTH = 1176, HEIGHT = 1470, HALF = HEIGHT / 2;
 
 const FRAMES = [
-  { name: 'Classic', src: 'Assets/fish-photobooth/camerapage/frame.png' },
-  // tambahin frame lain di sini, contoh:
-  // { name: 'Pink', src: 'Assets/fish-photobooth/camerapage/frame-pink.png' },
+  {
+    name: 'Frame 1',
+    src: 'Assets/frame/frame1.png'
+  },
+  {
+    name: 'Frame 2',
+    src: 'Assets/frame/frame2.png'
+  },
+  {
+    name: 'Frame 3',
+    src: 'Assets/frame/frame3.png'
+  },
+  {
+    name: 'Frame 4',
+    src: 'Assets/frame/frame4.png'
+  }
 ];
 
 const screens = {
